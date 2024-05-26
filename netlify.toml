@@ -3,4 +3,3 @@
 
 [functions]
   directory = "functions"
-  python_runtime = "3.8"
