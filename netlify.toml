@@ -1,7 +1,6 @@
 [build]
   publish = "static"
-  functions = "app"
+  functions = "functions"
 
 [functions]
-  directory = "app"
-  python_runtime = "3.8"
+  node_bundler = "esbuild"
