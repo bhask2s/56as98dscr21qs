@@ -1,40 +1,39 @@
 import os
-print("Current working directory:", os.getcwd())
-
-from flask import request, render_template, jsonify, send_file, current_app as app
+import requests
+from flask import Blueprint, render_template, request, jsonify, send_file
 from .utils import get_youtube_transcript_with_time, export_to_txt
 
-@app.route('/')
+main = Blueprint('main', __name__)
+
+@main.route('/')
 def home():
     return render_template('home.html')
 
-# ... (rest of the routes)
-
-
-@app.route('/run', methods=['POST'])
-def run_code():
+@main.route('/run', methods=['POST'])
+def run_transcript():
     video_url = request.form['video_url']
     language = request.form['language']
-    transcript_data = get_youtube_transcript_with_time(video_url, language)
-    if "error" in transcript_data:
-        return render_template('./templates/result.html', result=transcript_data['error'], download=False)
-    filename = "transcript_last"
-    filepath = export_to_txt(transcript_data['transcript'], filename)
-    return render_template('result.html', result=transcript_data['transcript'], download=True, filename=filename)
-
-@app.route('/download/<filename>')
-def download_file(filename):
-    filepath = f'{filename}.txt'
-    return send_file(filepath, as_attachment=True)
-
-@app.route('/api/transcribe', methods=['POST'])
-def api_transcribe():
-    data = request.json
-    if not data or 'video_url' not in data:
-        return jsonify({"error": "Invalid input, 'video_url' is required"}), 400
     
-    video_url = data['video_url']
+    transcript_result = get_youtube_transcript_with_time(video_url, language)
+    
+    if 'error' in transcript_result:
+        transcription = transcript_result['error']
+        return render_template('result.html', transcription=transcription)
+    else:
+        transcription = transcript_result['transcript']
+        # Export to txt file
+        filepath = export_to_txt(transcription, 'transcript')
+        return send_file(filepath, as_attachment=True, download_name='transcript.txt')
+
+@main.route('/api/transcript', methods=['POST'])
+def api_transcript():
+    data = request.get_json()
+    video_url = data.get('video_url')
     language = data.get('language', 'pt')
-    result = get_youtube_transcript_with_time(video_url, language)
     
-    return jsonify(result)
+    transcript_result = get_youtube_transcript_with_time(video_url, language)
+    
+    if 'error' in transcript_result:
+        return jsonify({"error": transcript_result['error']}), 400
+    
+    return jsonify({"transcript": transcript_result['transcript']})
