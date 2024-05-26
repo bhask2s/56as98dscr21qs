@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+<head><title>Transcript Result</title></head>
+<body>
+    <h1>Transcript Result</h1>
+    <pre>{{ result }}</pre>
+    {% if download %}
+    <script>
+        window.onload = function() {
+            window.location.href = "{{ url_for('download_file', filename=filename) }}";
+        };
+    </script>
+    {% endif %}
+    <br>
+    <a href="/">Go Back</a>
+</body>
+</html>
