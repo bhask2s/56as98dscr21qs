@@ -1,5 +1,3 @@
-import os
-import requests
 from flask import Blueprint, render_template, request, jsonify, send_file
 from .utils import get_youtube_transcript_with_time, export_to_txt
 
@@ -21,7 +19,6 @@ def run_transcript():
         return render_template('result.html', transcription=transcription)
     else:
         transcription = transcript_result['transcript']
-        # Export to txt file
         filepath = export_to_txt(transcription, 'transcript')
         return send_file(filepath, as_attachment=True, download_name='transcript.txt')
 
