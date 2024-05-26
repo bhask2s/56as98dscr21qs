@@ -1,0 +1,7 @@
+[build]
+  publish = "static"
+  functions = "app"
+
+[functions]
+  directory = "app"
+  python_runtime = "3.8"
