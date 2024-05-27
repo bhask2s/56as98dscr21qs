@@ -1,5 +1,6 @@
 [build]
-  functions = "templates/home.html"
+  publish = "templates" # Or wherever your static files are located
+  functions = "netlify/functions"
 
 [functions]
   directory = "netlify/functions"

@@ -1,13 +1,11 @@
 from youtube_transcript_api import YouTubeTranscriptApi
 
-# Function to export text to a .txt file
 def export_to_txt(text, filename):
     filepath = f'{filename}.txt'
     with open(filepath, 'w', encoding='utf-8') as file:
         file.write(text)
     return filepath
 
-# Function to get YouTube transcript with time
 def get_youtube_transcript_with_time(video_url, language='pt'):
     video_id = video_url.split('watch?v=')[1]
 
